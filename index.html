@@ -32,11 +32,9 @@
     text-align:center;
   }
   .label{
-    font-size:12px;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color: var(--ink);
-    opacity:0.5;
+    font-size:11pt;
+    letter-spacing:0.02em;
+    color: #00b7ee;
     margin:0 0 10px;
     font-weight:600;
   }
@@ -51,6 +49,12 @@
     letter-spacing:-0.01em;
     font-variant-numeric: tabular-nums;
   }
+  .date-line{
+    margin-top:8px;
+    font-size:9pt;
+    color:var(--ink);
+    opacity:0.5;
+  }
 </style>
 </head>
 <body>
@@ -58,6 +62,7 @@
   <div class="card">
     <p class="label" id="title"></p>
     <div class="dday" id="dday"></div>
+    <p class="date-line" id="dateLine"></p>
   </div>
 
 <script>
@@ -110,6 +115,7 @@
 
   const ddayEl = document.getElementById("dday");
   const titleEl = document.getElementById("title");
+  const dateLineEl = document.getElementById("dateLine");
 
   if(TITLE_TEXT){
     titleEl.textContent = TITLE_TEXT;
@@ -129,6 +135,8 @@
     } else {
       ddayEl.textContent = `D${days}`;
     }
+    const [y,m,d] = TARGET_DATE.split("-");
+    dateLineEl.textContent = `${y}.${m}.${d}`;
   }
 </script>
 
