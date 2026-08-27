@@ -7,9 +7,9 @@
 <style>
   :root{
     --ink:#0f2a4a;
-    --paper:#dff0fb;
-    --line: rgba(15,42,74,0.14);
+    --paper:transparent;
     --accent:#0b3d91;
+    --dday-size:52pt;
   }
   *{ box-sizing:border-box; }
   html,body{
@@ -27,11 +27,9 @@
     width:90%;
     max-width:300px;
     background:var(--paper);
-    border:1px solid var(--line);
     border-radius:18px;
     padding:28px 32px;
     text-align:center;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
   .label{
     font-size:12px;
@@ -46,7 +44,7 @@
     display:none;
   }
   .dday{
-    font-size:52px;
+    font-size:var(--dday-size);
     font-weight:800;
     line-height:1;
     color:var(--accent);
@@ -76,10 +74,17 @@
   const TITLE_TEXT = params.get("title") || "";
   const BG_PARAM = params.get("bg");
   const ACCENT_PARAM = params.get("accent");
+  const SIZE_PARAM = params.get("size"); // pt 단위 숫자만 입력 (예: size=36)
+
+  if(SIZE_PARAM && !isNaN(parseFloat(SIZE_PARAM))){
+    document.documentElement.style.setProperty("--dday-size", `${parseFloat(SIZE_PARAM)}pt`);
+  }
 
   function toColor(value){
     if(!value) return null;
     const v = value.trim();
+    // 완전 투명 (노션 배경이 그대로 비침)
+    if(v.toLowerCase() === "transparent" || v.toLowerCase() === "none") return "transparent";
     // rgb(...) 형태를 그대로 넣은 경우
     if(v.startsWith("rgb")) return v;
     // "223,240,251" 형태로 콤마로 넣은 경우
