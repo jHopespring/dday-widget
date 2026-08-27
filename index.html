@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D+ Counter</title>
+<style>
+  :root{
+    --ink:#0f2a4a;
+    --paper:#dff0fb;
+    --line: rgba(15,42,74,0.14);
+    --accent:#0b3d91;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0;
+    background:transparent;
+    height:100%;
+  }
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  }
+  .card{
+    width:90%;
+    max-width:300px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:28px 32px;
+    text-align:center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .label{
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color: var(--ink);
+    opacity:0.5;
+    margin:0 0 10px;
+    font-weight:600;
+  }
+  .label.hidden{
+    display:none;
+  }
+  .dday{
+    font-size:52px;
+    font-weight:800;
+    line-height:1;
+    color:var(--accent);
+    letter-spacing:-0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <p class="label" id="title"></p>
+    <div class="dday" id="dday"></div>
+  </div>
+
+<script>
+  // 링크 뒤에 이렇게 붙여서 사용해요:
+  // index.html?date=2026-03-29&title=데뷔한날&bg=DFF0FB&accent=0B3D91
+  //
+  // date   : 필수. 기준 날짜 (YYYY-MM-DD)
+  // title  : 선택. 위에 뜨는 작은 라벨 문구 (없으면 라벨 자체가 안 보여요)
+  // bg     : 선택. 배경색. HEX(예: DFF0FB, # 없이도 됨) 또는 rgb(예: 223,240,251) 모두 가능
+  // accent : 선택. D+ 숫자 색. 위와 같은 방식
+
+  const params = new URLSearchParams(window.location.search);
+  const TARGET_DATE = params.get("date");
+  const TITLE_TEXT = params.get("title") || "";
+  const BG_PARAM = params.get("bg");
+  const ACCENT_PARAM = params.get("accent");
+
+  function toColor(value){
+    if(!value) return null;
+    const v = value.trim();
+    // rgb(...) 형태를 그대로 넣은 경우
+    if(v.startsWith("rgb")) return v;
+    // "223,240,251" 형태로 콤마로 넣은 경우
+    if(v.includes(",")) return `rgb(${v})`;
+    // hex 코드 (# 있어도 되고 없어도 됨)
+    return v.startsWith("#") ? v : `#${v}`;
+  }
+
+  const bgColor = toColor(BG_PARAM);
+  const accentColor = toColor(ACCENT_PARAM);
+  if(bgColor) document.documentElement.style.setProperty("--paper", bgColor);
+  if(accentColor) document.documentElement.style.setProperty("--accent", accentColor);
+
+  function calcDday(targetStr){
+    const target = new Date(targetStr + "T00:00:00");
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const diffMs = today - target;
+    return Math.round(diffMs / (1000*60*60*24));
+  }
+
+  const ddayEl = document.getElementById("dday");
+  const titleEl = document.getElementById("title");
+
+  if(TITLE_TEXT){
+    titleEl.textContent = TITLE_TEXT;
+  } else {
+    titleEl.classList.add("hidden");
+  }
+
+  if(!TARGET_DATE){
+    ddayEl.textContent = "날짜를 입력해주세요";
+    ddayEl.style.fontSize = "18px";
+  } else {
+    const days = calcDday(TARGET_DATE);
+    if(days > 0){
+      ddayEl.textContent = `D+${days}`;
+    } else if(days === 0){
+      ddayEl.textContent = "D-DAY";
+    } else {
+      ddayEl.textContent = `D${days}`;
+    }
+  }
+</script>
+
+</body>
+</html>
