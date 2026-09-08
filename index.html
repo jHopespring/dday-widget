@@ -10,6 +10,8 @@
     --paper:transparent;
     --accent:#0b3d91;
     --dday-size:52pt;
+    --title-size:11pt;
+    --date-size:9pt;
   }
   *{ box-sizing:border-box; }
   html,body{
@@ -42,7 +44,7 @@
     text-align:center;
   }
   .label{
-    font-size:11pt;
+    font-size:var(--title-size);
     letter-spacing:0.02em;
     color: #00b7ee;
     margin:0 0 2px;
@@ -61,7 +63,7 @@
   }
   .date-line{
     margin-top:2px;
-    font-size:9pt;
+    font-size:var(--date-size);
     color:var(--ink);
     opacity:0.5;
   }
@@ -77,22 +79,33 @@
 
 <script>
   // 링크 뒤에 이렇게 붙여서 사용해요:
-  // index.html?date=2026-03-29&title=데뷔한날&bg=DFF0FB&accent=0B3D91
+  // index.html?date=2026-03-29&title=데뷔한날&bg=DFF0FB&accent=0B3D91&size=24&titleSize=11&dateSize=9
   //
-  // date   : 필수. 기준 날짜 (YYYY-MM-DD)
-  // title  : 선택. 위에 뜨는 작은 라벨 문구 (없으면 라벨 자체가 안 보여요)
-  // bg     : 선택. 배경색. HEX(예: DFF0FB, # 없이도 됨) 또는 rgb(예: 223,240,251) 모두 가능
-  // accent : 선택. D+ 숫자 색. 위와 같은 방식
+  // date      : 필수. 기준 날짜 (YYYY-MM-DD)
+  // title     : 선택. 위에 뜨는 작은 라벨 문구 (없으면 라벨 자체가 안 보여요)
+  // bg        : 선택. 배경색. HEX(예: DFF0FB, # 없이도 됨), rgb(예: 223,240,251), 또는 transparent
+  // accent    : 선택. D+ 숫자 색. 위와 같은 방식
+  // size      : 선택. D+ 숫자 크기 (pt 단위 숫자만)
+  // titleSize : 선택. 타이틀 라벨 크기 (pt 단위 숫자만)
+  // dateSize  : 선택. 하단 날짜 크기 (pt 단위 숫자만)
 
   const params = new URLSearchParams(window.location.search);
   const TARGET_DATE = params.get("date");
   const TITLE_TEXT = params.get("title") || "";
   const BG_PARAM = params.get("bg");
   const ACCENT_PARAM = params.get("accent");
-  const SIZE_PARAM = params.get("size"); // pt 단위 숫자만 입력 (예: size=36)
+  const SIZE_PARAM = params.get("size"); // D+ 숫자 크기, pt
+  const TITLE_SIZE_PARAM = params.get("titleSize"); // 타이틀 글자 크기, pt
+  const DATE_SIZE_PARAM = params.get("dateSize"); // 날짜 글자 크기, pt
 
   if(SIZE_PARAM && !isNaN(parseFloat(SIZE_PARAM))){
     document.documentElement.style.setProperty("--dday-size", `${parseFloat(SIZE_PARAM)}pt`);
+  }
+  if(TITLE_SIZE_PARAM && !isNaN(parseFloat(TITLE_SIZE_PARAM))){
+    document.documentElement.style.setProperty("--title-size", `${parseFloat(TITLE_SIZE_PARAM)}pt`);
+  }
+  if(DATE_SIZE_PARAM && !isNaN(parseFloat(DATE_SIZE_PARAM))){
+    document.documentElement.style.setProperty("--date-size", `${parseFloat(DATE_SIZE_PARAM)}pt`);
   }
 
   function toColor(value){
